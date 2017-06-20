@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class implements a multithreaded web server.
@@ -17,6 +19,8 @@ import java.util.concurrent.Executors;
 public class Server {
 
     public static final int PORT = 9090;
+
+    private static final Logger logger = Logger.getLogger(Server.class.getName());
 
     public static void main(String[] args) {
 
@@ -36,6 +40,8 @@ public class Server {
 
                 //init new socket for every request
                 Socket clientSocket = serverSocket.accept();
+                logger.log(Level.INFO, "new connection from " + clientSocket.getInetAddress());
+
 
                 //strong thread pool creation
                 ExecutorService cachedPool = Executors.newCachedThreadPool();
@@ -46,7 +52,12 @@ public class Server {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("\n#####    Could not start the server.    #####\n\n" +
+                    "Please check:\n\nif there isn't another server process running\nor if the port "
+                    + Server.PORT
+                    +" is free for use.");
+            System.out.println("\n#############################################\n");
+            System.exit(1);
         }
     }
 }
